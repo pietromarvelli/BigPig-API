@@ -24,4 +24,12 @@ public class UserService {
       return userRepository.save(user);
    }
 
+   public User findByUsernamePassword(String username, String password) {
+      return userRepository.findByUsernameAndPassword(username, password);
+   }
+
+   public User findByUserId(Integer userId) {
+      return userRepository.findByIdUser(userId);
+   }
+
 }

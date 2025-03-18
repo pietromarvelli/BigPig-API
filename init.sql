@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS `user` (
     `idUser` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(100) NOT NULL DEFAULT '0',
     `surname` varchar(100) NOT NULL DEFAULT '0',
+    `username` varchar(100) NOT NULL DEFAULT '0',
+    `password` varchar(100) NOT NULL DEFAULT '0',
     PRIMARY KEY (`idUser`)
 );
 
