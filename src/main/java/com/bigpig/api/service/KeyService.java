@@ -16,8 +16,12 @@ public class KeyService {
       return keyRepository.findAll();
    }
 
-   public Key findById(Tipo id) {
+   public Key findById(String id) {
       return keyRepository.findById(id).orElse(null);
+   }
+
+   public Key save(Key key) {
+      return keyRepository.save(key);
    }
 
 }

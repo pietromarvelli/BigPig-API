@@ -1,6 +1,8 @@
 package com.bigpig.api.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -13,8 +15,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "User")
+@Table(name = "user")
 
 public class User {
-
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Integer idUser;
+   private String name;
+   private String surname;
 }

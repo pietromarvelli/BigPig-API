@@ -16,8 +16,12 @@ public class UserService {
       return userRepository.findAll();
    }
 
-   public User findById(Tipo id) {
+   public User findById(Integer id) {
       return userRepository.findById(id).orElse(null);
+   }
+
+   public User save(User user) {
+      return userRepository.save(user);
    }
 
 }
