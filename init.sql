@@ -11,11 +11,11 @@ CREATE TABLE IF NOT EXISTS `user` (
     PRIMARY KEY (`idUser`)
 );
 
-CREATE TABLE IF NOT EXISTS `key` (
-    `idUser` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `user_key` (
     `publicK` varchar(69) NOT NULL DEFAULT '0',
-    `validazioni` BOOL NOT NULL DEFAULT FALSE,
+    `idUser` int(11) NOT NULL,
+    `validazioni` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`publicK`),
     KEY `idUser` (`idUser`),
-    CONSTRAINT `fk_keys_users` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE CASCADE
+    CONSTRAINT `fk_keys_users` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE
 );
