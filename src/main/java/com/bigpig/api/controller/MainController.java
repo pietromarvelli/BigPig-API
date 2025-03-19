@@ -51,9 +51,9 @@ public class MainController {
     }
 
     @GetMapping("/getKeys")
-    public String getKeys(Model model, HttpSession session) {
+    public ResponseEntity<?> getKeys(Model model, HttpSession session) {
         model.addAttribute("keys", keyService.findAll());
-        return "redirect:/keys";
+        return ResponseEntity.ok().body("{\"chiavi\": " + keyService.findAll() + "}");
     }
 
     @GetMapping("/getUsers")
