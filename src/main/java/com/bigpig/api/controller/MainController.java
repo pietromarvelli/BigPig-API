@@ -1,10 +1,8 @@
 package com.bigpig.api.controller;
 
-import com.bigpig.api.model.Key;
-import com.bigpig.api.model.User;
-import com.bigpig.api.service.KeyService;
-import com.bigpig.api.service.UserService;
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.bigpig.api.model.Key;
+import com.bigpig.api.model.User;
+import com.bigpig.api.service.KeyService;
+import com.bigpig.api.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MainController {
@@ -56,5 +61,19 @@ public class MainController {
         model.addAttribute("users", userService.findAll());
         return "redirect:/users";
     }
+
+    @GetMapping("/getKeysByUsername")
+    public String getKeysByUsername(@RequestParam("username") String username, Model model) {
+        User user = userService.findByUsername(username);
+        if (user != null) {
+            List<Key> keys = keyService.findByUsername(username);
+            model.addAttribute("keys", keys);
+            return "redirect:/keys";
+        } else {
+            model.addAttribute("msg", "User not found");
+            return "redirect:/";
+        }
+    }
+
 
 }

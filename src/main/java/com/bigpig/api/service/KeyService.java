@@ -24,4 +24,8 @@ public class KeyService {
       return keyRepository.save(key);
    }
 
+   public List<Key> findByUsername(String username) {
+      return keyRepository.findByUsername(username);
+   }
+
 }
