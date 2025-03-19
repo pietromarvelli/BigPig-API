@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "key")
+@Table(name = "user_keys")
 
 public class Key {
     @Id

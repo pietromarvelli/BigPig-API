@@ -3,7 +3,9 @@ package com.bigpig.api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bigpig.api.model.Key;
+import com.bigpig.api.model.User;
 import com.bigpig.api.repository.KeyRepository;
+import com.bigpig.api.repository.UserRepository;
 
 import java.util.List;
 
@@ -11,6 +13,9 @@ import java.util.List;
 public class KeyService {
    @Autowired
    private KeyRepository keyRepository;
+
+   @Autowired
+   private UserRepository userRepository;
 
    public List<Key> findAll() {
       return keyRepository.findAll();
@@ -24,8 +29,7 @@ public class KeyService {
       return keyRepository.save(key);
    }
 
-   public List<Key> findByUsername(String username) {
-      return keyRepository.findByUsername(username);
+   public List<Key> findByUser(User user) {
+      return keyRepository.findByUser(user);
    }
-
 }

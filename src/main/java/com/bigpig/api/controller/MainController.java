@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,9 +52,14 @@ public class MainController {
     }
 
     @GetMapping("/getKeys")
-    public ResponseEntity<?> getKeys(Model model, HttpSession session) {
-        model.addAttribute("keys", keyService.findAll());
-        return ResponseEntity.ok().body("{\"chiavi\": " + keyService.findAll() + "}");
+    public ResponseEntity<?> getKeys(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            List<Key> keys = keyService.findByUser(user);
+            return ResponseEntity.ok().body(keys);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"User not logged in\"}");
+        }
     }
 
     @GetMapping("/getUsers")
@@ -66,7 +72,7 @@ public class MainController {
     public String getKeysByUsername(@RequestParam("username") String username, Model model) {
         User user = userService.findByUsername(username);
         if (user != null) {
-            List<Key> keys = keyService.findByUsername(username);
+            List<Key> keys = keyService.findByUser(user);
             model.addAttribute("keys", keys);
             return "redirect:/keys";
         } else {
@@ -74,6 +80,4 @@ public class MainController {
             return "redirect:/";
         }
     }
-
-
 }

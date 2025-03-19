@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     PRIMARY KEY (`idUser`)
 );
 
-CREATE TABLE IF NOT EXISTS `user_key` (
+CREATE TABLE IF NOT EXISTS `user_keys` (
     `publicK` varchar(69) NOT NULL DEFAULT '0',
     `idUser` int(11) NOT NULL,
     `validazioni` BOOLEAN NOT NULL DEFAULT FALSE,
