@@ -30,15 +30,13 @@ public class MainController {
     private KeyService keyService;
 
     @PostMapping("/login")
-    public String login(RedirectAttributes redirectAttributes, Model model, HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password) {
+    public ResponseEntity<?> login(HttpSession session, @RequestParam("username") String username, @RequestParam("password") String password) {
         User user = userService.findByUsernamePassword(username, password);
         if (user != null) {
             session.setAttribute("user", user);
-            return "redirect:/home";
-
+            return ResponseEntity.ok().body("{\"success\": true}");
         } else {
-            redirectAttributes.addAttribute("msg", "Wrong credential");
-            return "redirect:/";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"success\": false, \"message\": \"Wrong credentials\"}");
         }
     }
 
@@ -51,33 +49,20 @@ public class MainController {
         return ResponseEntity.ok().body("{\"message\": \"Chiave Inserita\"}");
     }
 
+    // @GetMapping("/getUsers")
+    // public String getUsers(Model model, HttpSession session) {
+    //     model.addAttribute("users", userService.findAll());
+    //     return "redirect:/users";
+    // }
+
     @GetMapping("/getKeys")
     public ResponseEntity<?> getKeys(HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user != null) {
             List<Key> keys = keyService.findByUser(user);
-            return ResponseEntity.ok().body(keys);
+            return ResponseEntity.ok(keys); // Restituisce direttamente l'array di chiavi come JSON
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"User not logged in\"}");
-        }
-    }
-
-    @GetMapping("/getUsers")
-    public String getUsers(Model model, HttpSession session) {
-        model.addAttribute("users", userService.findAll());
-        return "redirect:/users";
-    }
-
-    @GetMapping("/getKeysByUsername")
-    public String getKeysByUsername(@RequestParam("username") String username, Model model) {
-        User user = userService.findByUsername(username);
-        if (user != null) {
-            List<Key> keys = keyService.findByUser(user);
-            model.addAttribute("keys", keys);
-            return "redirect:/keys";
-        } else {
-            model.addAttribute("msg", "User not found");
-            return "redirect:/";
         }
     }
 }
