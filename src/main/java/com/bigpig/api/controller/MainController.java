@@ -1,4 +1,5 @@
 package com.bigpig.api.controller;
+import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -118,6 +119,53 @@ public class MainController {
         } else {
             model.addAttribute("msg", "User not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"success\": false, \"message\": \"User not found\"}");
+        }
+    }
+
+    @GetMapping("/generateKey")
+    public ResponseEntity<?> getGeneratedKeys(HttpSession session, @RequestParam int keySize, @RequestParam String username) {
+        try {
+            // Verifica se la dimensione della chiave è valida
+            if (keySize != 2048 && keySize != 3072 && keySize != 4096) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"success\": false, \"message\": \"Invalid key size\"}");
+            }
+
+            // Generazione della coppia di chiavi RSA
+            KeyPair keyPair = RSAKeyUtility.generateKeyPair(keySize);
+
+            // Codifica in Base64 le chiavi pubblica e privata
+            String publicKey = RSAKeyUtility.toBase64(keyPair.getPublic().getEncoded());
+            String privateKey = RSAKeyUtility.toBase64(keyPair.getPrivate().getEncoded());
+
+            // Verifica se le chiavi sono state generate correttamente
+            if (publicKey == null || privateKey == null) {
+                if (username != null) {
+                    // Se il nome utente è valido, salva la chiave
+                    Key newKey = new Key();
+                    newKey.setPublicK(publicKey);
+                    newKey.setValidazioni(true);
+                    newKey.setUser(userService.findByUsername(username));
+                    keyService.save(newKey);
+
+                    // Restituisci una risposta di successo
+                    return ResponseEntity.ok().body("{\"success\": true, \"message\": \"Key generated successfully\"}");
+                } else {
+                    // Se l'username non è valido, restituisci un errore 404
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"success\": false, \"message\": \"User not found\"}");
+                }
+            } else {
+                // Se la generazione delle chiavi è fallita, restituisci un errore 500
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"success\": false, \"message\": \"Key Generation Failed\"}");
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            // Log dell'errore in caso di eccezione
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"success\": false, \"message\": \"Error during key generation: " + e.getMessage() + "\"}");
+        } catch (Exception e) {
+            // Gestione di eventuali altre eccezioni
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"success\": false, \"message\": \"Unexpected error occurred: " + e.getMessage() + "\"}");
         }
     }
 
